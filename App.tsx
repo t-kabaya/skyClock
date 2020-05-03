@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, useState, useEffect } from 'react'
 import {
   View,
   Text,
@@ -12,7 +12,7 @@ import { KeepAwake } from 'expo'
 import * as ScreenOrientation from 'expo-screen-orientation';
 import AnimatedGradientTransition from './AnimatedGradientTransition'
 import * as Font from 'expo-font'
-import moment from 'moment'
+import Moment from 'moment'
 import grads from './gradationColor'
 
 const { height, width } = Dimensions.get('window')
@@ -25,52 +25,41 @@ UIManager.setLayoutAnimationEnabledExperimental &&
 
 const interval = 1
 
-class App extends Component {
-  state = {
-    moment: moment(),
-    calculating: true
-  }
+export default () => {
+  // const [moment, setMoment] = useState(moment())
+  const [calculating, setCalculating] = useState(true)
+  const [hour, setHour] = useState(0)
+  const [minute, setMinute] = useState(0)
+  const [backgroundSkyColor, setBackgroundSkyColor] = useState(grads[0])
+  const moment = Moment()
 
-  // 15分毎に色を変える
-  componentDidMount = async () => {
+  useEffect(() => {
     setInterval(() => {
-      const moment = this.state.moment
       let hour = parseInt(moment.format('H'))
       let minute =
         moment.format('m').length === 1
           ? '0' + moment.format('m')
           : moment.format('m')
       LayoutAnimation.easeInEaseOut()
-      // 通常はmoment.add(1, 'seconds')
       moment.add(interval, 'seconds')
-
-      this.setState({
-        hour: hour,
-        minute: minute,
-        calculating: false,
-        // 15分毎　= １時間　＊ ４ + minutes / 15
-        backgroundSkyColor: grads[hour * 4 + Math.floor(minute / 15)]
-      })
+      setHour(hour)
+      setMinute(minute)
+      setCalculating(false)
+      setBackgroundSkyColor(grads[hour * 4 + Math.floor(minute / 15)])
     }, 1000)
 
     Font.loadAsync({
       'text-me-one': require('./TextMeOne-Regular.ttf')
     })
-  }
+  },[])
 
-  // render() {
-  //   return <Text>lol</Text>
-  // }
-
-  render () {
-    const { hour, minute, backgroundSkyColor, calculating } = this.state
     if (calculating) return null
     const firstNum = hour.toString()[hour.toString().length - 2]
     const secondNum = hour.toString()[hour.toString().length - 1]
     const thirdNum = minute.toString()[0]
     const forthNum = minute.toString()[1]
     return (
-      <View style={styles.container}>
+      <View style={S.container}>
         <AnimatedGradientTransition
           colors={backgroundSkyColor}
           style={{
@@ -81,19 +70,19 @@ class App extends Component {
             height: height
           }}
         >
-          <View style={styles.gradientContainer}>
+          <View style={S.gradientContainer}>
             <StatusBar style={{ backgroundColor: 'transparent' }} />
-            <Text style={[styles.timeText, { paddingRight: 260 }]}>
+            <Text style={[S.timeText, { paddingRight: 260 }]}>
               {firstNum}
             </Text>
-            <Text style={[styles.timeText, { paddingRight: 110 }]}>
+            <Text style={[S.timeText, { paddingRight: 110 }]}>
               {secondNum}
             </Text>
-            <Text style={styles.timeText}>:</Text>
-            <Text style={[styles.timeText, { paddingLeft: 110 }]}>
+            <Text style={S.timeText}>:</Text>
+            <Text style={[S.timeText, { paddingLeft: 110 }]}>
               {thirdNum}
             </Text>
-            <Text style={[styles.timeText, { paddingLeft: 260 }]}>
+            <Text style={[S.timeText, { paddingLeft: 260 }]}>
               {forthNum}
             </Text>
           </View>
@@ -102,10 +91,10 @@ class App extends Component {
         {/* <KeepAwake /> */}
       </View>
     )
-  }
+  
 }
 
-const styles = StyleSheet.create({
+const S = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
@@ -129,11 +118,3 @@ const styles = StyleSheet.create({
 // https://github.com/react-native-community/react-native-linear-gradient/pull/314/commits/22bffd5b842cba73d59e62820bc465fe81d5cfcc
 // 色のグラデーションは以下から
 // https://codepen.io/justgooddesign/pen/ougtB
-
-// 色のマッピングは田端さんが考え中
-// 画面の横対応だけやっておく。
-// fontの色は白
-
-//  計２時間でここまでのものが出来る　Expo最高
-
-export default App

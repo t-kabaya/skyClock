@@ -8,12 +8,12 @@ import {
   LayoutAnimation,
   Dimensions
 } from 'react-native'
-import { KeepAwake } from 'expo'
 import * as ScreenOrientation from 'expo-screen-orientation';
-import AnimatedGradientTransition from './AnimatedGradientTransition'
 import * as Font from 'expo-font'
 import Moment from 'moment'
-import grads from './gradationColor'
+import { useKeepAwake } from 'expo-keep-awake';
+import AnimatedGradientTransition from './AnimatedGradientTransition'
+import grads from './skyColor'
 
 const { height, width } = Dimensions.get('window')
 const maxWidth = height > width ? height : width
@@ -23,20 +23,21 @@ const maxWidth = height > width ? height : width
 UIManager.setLayoutAnimationEnabledExperimental &&
   UIManager.setLayoutAnimationEnabledExperimental(true)
 
-const interval = 1
+const interval = __DEV__ ? 1000 : 1
 
 export default () => {
-  // const [moment, setMoment] = useState(moment())
+  useKeepAwake()
+
   const [calculating, setCalculating] = useState(true)
   const [hour, setHour] = useState(0)
-  const [minute, setMinute] = useState(0)
+  const [minute, setMinute] = useState('')
   const [backgroundSkyColor, setBackgroundSkyColor] = useState(grads[0])
   const moment = Moment()
 
   useEffect(() => {
     setInterval(() => {
-      let hour = parseInt(moment.format('H'))
-      let minute =
+      const hour = parseInt(moment.format('H'))
+      const minute =
         moment.format('m').length === 1
           ? '0' + moment.format('m')
           : moment.format('m')
@@ -113,8 +114,3 @@ const S = StyleSheet.create({
     fontFamily: 'text-me-one'
   }
 })
-
-// 以下のURLを参考にした
-// https://github.com/react-native-community/react-native-linear-gradient/pull/314/commits/22bffd5b842cba73d59e62820bc465fe81d5cfcc
-// 色のグラデーションは以下から
-// https://codepen.io/justgooddesign/pen/ougtB

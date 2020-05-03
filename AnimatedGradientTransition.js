@@ -4,8 +4,6 @@ import { Animated, Easing } from 'react-native'
 import _ from 'lodash'
 import { LinearGradient as NativeLinearGradient } from 'expo-linear-gradient'
 
-//  import NativeLinearGradient from 'react-native-linear-gradient';
-
 class LinearGradient extends Component {
   static propTypes = {
     ...NativeLinearGradient.propTypes

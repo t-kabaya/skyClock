@@ -24,6 +24,10 @@
     "ios": {
       "supportsTablet": true,
       "requireFullScreen": true
+    },
+    "android": {
+      "package": "com.kabainc.skyClock",
+      "versionCode": 1
     }
   }
 }

@@ -23,6 +23,8 @@ ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.ALL)
 UIManager.setLayoutAnimationEnabledExperimental &&
   UIManager.setLayoutAnimationEnabledExperimental(true)
 
+StatusBar.setHidden(true)
+
 const interval = __DEV__ ? 1000 : 1
 
 export default () => {
@@ -32,6 +34,7 @@ export default () => {
   const [backgroundColor, setBackgroundColor] = useState(grads[0])
   
   useKeepAwake()
+
   const moment = Moment()
 
   useEffect(() => {
@@ -67,7 +70,6 @@ export default () => {
         style={S.animatedGradientTransition}
       >
         <View style={S.gradientContainer}>
-          <StatusBar style={{ backgroundColor: 'transparent' }} />
           <Text style={[S.timeText, { paddingRight: 260 }]}>
             {firstNum}
           </Text>
